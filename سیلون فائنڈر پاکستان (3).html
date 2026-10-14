@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سیلون فائنڈر پاکستان</title>
+<style>
+:root{--bg:#faf6f1;--card:#fff;--tx:#2a2230;--mut:#7a7083;--ac:#b4306b;--ac2:#7b2cbf;--bd:#eadfe6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17121c;--card:#221b2a;--tx:#f3eef7;--mut:#a99db5;--bd:#352b3f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Noto Naskh Arabic",Tahoma,serif;line-height:2}
+header{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;padding:18px 14px 14px}
+h1{margin:0;font-size:22px}
+header p{margin:0 0 8px;font-size:13px;opacity:.9}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+input,select,textarea,button{font:inherit;font-size:15px}
+input,select,textarea{flex:1;min-width:120px;padding:6px 10px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+button{border:0;border-radius:10px;padding:6px 14px;background:var(--ac);color:#fff;cursor:pointer}
+button.sec{background:var(--card);color:var(--ac);border:1px solid var(--ac)}
+main{padding:12px;max-width:760px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.pic{height:140px;display:flex;align-items:center;justify-content:center;font-size:52px;background-size:cover;background-position:center}
+.in{padding:10px 14px}
+.in h3{margin:0;font-size:18px}
+.m{color:var(--mut);font-size:13px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.acts a,.acts button{text-decoration:none;font-size:14px;padding:4px 12px;border-radius:10px;background:var(--ac);color:#fff;border:0}
+.acts a.w{background:#1f9d55}.acts a.c{background:var(--ac2)}
+dialog{border:0;border-radius:16px;padding:16px;width:min(92vw,420px);background:var(--card);color:var(--tx)}
+dialog::backdrop{background:#0008}
+dialog label{display:block;font-size:14px;margin-top:6px}
+dialog input,dialog select,dialog textarea{width:100%}
+.row{display:flex;gap:8px;margin-top:12px}
+.ap{border-top:1px dashed var(--bd);padding:6px 0;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+<h1>💇 سیلون فائنڈر پاکستان</h1>
+<p>اپنے شہر کے ہیئر سیلون تلاش کریں، کال کریں اور اپوائنٹمنٹ لیں</p>
+<div class="bar">
+<input id="q" placeholder="سیلون یا علاقے کا نام لکھیں…">
+<select id="city"><option value="">تمام شہر</option></select>
+</div>
+<div class="bar" style="margin-top:8px">
+<button class="sec" onclick="openAdd()">➕ اپنا سیلون شامل کریں</button>
+<button class="sec" onclick="openApps()">📅 میری اپوائنٹمنٹس</button>
+</div>
+</header>
+<main id="list"></main>
+
+<dialog id="dBook"><h3 id="bT"></h3>
+<label>آپ کا نام<input id="bN"></label>
+<label>فون نمبر<input id="bP" type="tel" dir="ltr"></label>
+<label>سروس<select id="bS"><option>ہیئر کٹ</option><option>ہیئر کلر</option><option>فیشل</option><option>برائیڈل میک اپ</option><option>دیگر</option></select></label>
+<label>تاریخ<input id="bD" type="date"></label>
+<label>وقت<input id="bTm" type="time"></label>
+<div class="row"><button onclick="book()">اپوائنٹمنٹ بُک کریں</button><button class="sec" onclick="dBook.close()">بند کریں</button></div></dialog>
+
+<dialog id="dAdd"><h3>نیا سیلون شامل کریں</h3>
+<label>سیلون کا نام<input id="aN"></label>
+<label>شہر<input id="aC"></label>
+<label>علاقہ / پتہ<input id="aA"></label>
+<label>فون / واٹس ایپ نمبر<input id="aP" type="tel" dir="ltr" placeholder="03XXXXXXXXX"></label>
+<label>سیلون کی تصویر<input id="aI" type="file" accept="image/*"></label>
+<div class="row"><button onclick="addSalon()">محفوظ کریں</button><button class="sec" onclick="dAdd.close()">بند کریں</button></div></dialog>
+
+<dialog id="dApps"><h3>میری اپوائنٹمنٹس</h3><div id="apL"></div><div class="row"><button class="sec" onclick="dApps.close()">بند کریں</button></div></dialog>
+
+<script>
+var SEED=[
+{n:"فیس کیئر سیلون",c:"لاہور",a:"گلشنِ راوی، اے بلاک",p:"03132002322",e:"💇"},
+{n:"فیس کیئر سیلون",c:"لاہور",a:"گلشنِ راوی، ایف بلاک",p:"03132002322",e:"💇"},
+{n:"فیس کیئر سیلون",c:"لاہور",a:"سبزہ زار، مکہ چوک",p:"03347487220",e:"💇"},
+{n:"فیس کیئر سیلون",c:"چیچہ وطنی",a:"چیچہ وطنی",p:"03132002322",e:"💇"},
+{n:"سٹائل ہب (نمونہ)",c:"کراچی",a:"ڈی ایچ اے",p:"03001234567",e:"✂️"},
+{n:"گلیمر سٹوڈیو (نمونہ)",c:"اسلام آباد",a:"ایف سیون",p:"03211234567",e:"💅"},
+{n:"رائل کٹس (نمونہ)",c:"فیصل آباد",a:"ڈی گراؤنڈ",p:"03331234567",e:"💈"}
+];
+var S=[],A=[],cur=0;
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+S=ld("salons",null);if(!S){S=SEED;}
+A=ld("apps",[]);
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function intl(p){p=p.replace(/\D/g,"");return p.indexOf("0")==0?"92"+p.slice(1):p}
+function cities(){var s={};S.forEach(function(x){s[x.c]=1});var el=document.getElementById("city"),v=el.value;
+el.innerHTML='<option value="">تمام شہر</option>'+Object.keys(s).map(function(c){return'<option>'+esc(c)+'</option>'}).join("");el.value=v}
+function render(){var q=document.getElementById("q").value.trim(),c=document.getElementById("city").value;
+var h=S.map(function(x,i){return[x,i]}).filter(function(t){var x=t[0];return(!c||x.c==c)&&(!q||(x.n+x.a+x.c).indexOf(q)>-1)}).map(function(t){var x=t[0],i=t[1];
+var st=x.img?'background-image:url('+x.img+')':'background:linear-gradient(135deg,#f6d5e6,#d9c2f0)';
+return'<div class="card"><div class="pic" style="'+st+'">'+(x.img?"":x.e||"💇")+'</div><div class="in"><h3>'+esc(x.n)+'</h3><div class="m">📍 '+esc(x.a)+'، '+esc(x.c)+'</div><div class="m" dir="ltr" style="text-align:right">📞 '+esc(x.p)+'</div><div class="acts"><a class="c" href="tel:'+esc(x.p)+'">📞 کال</a><a class="w" target="_blank" rel="noopener" href="https://wa.me/'+intl(x.p)+'">واٹس ایپ</a><button onclick="openBook('+i+')">📅 اپوائنٹمنٹ</button></div></div></div>'}).join("");
+document.getElementById("list").innerHTML=h||'<p class="m">کوئی سیلون نہیں ملا۔</p>'}
+function openBook(i){cur=i;document.getElementById("bT").textContent=S[i].n+" — "+S[i].c;dBook.showModal()}
+function book(){var n=bN.value.trim(),p=bP.value.trim(),d=bD.value,t=bTm.value;if(!n||!p||!d||!t){alert("براہِ کرم تمام معلومات بھریں");return}
+var s=S[cur];A.push({s:s.n+" ("+s.c+")",n:n,p:p,sv:bS.value,d:d,t:t});sv("apps",A);dBook.close();
+var m="السلام علیکم! میں اپوائنٹمنٹ لینا چاہتا/چاہتی ہوں۔\nنام: "+n+"\nسروس: "+bS.value+"\nتاریخ: "+d+"\nوقت: "+t;
+if(confirm("اپوائنٹمنٹ محفوظ ہو گئی۔ کیا سیلون کو واٹس ایپ پر بھیجیں؟"))window.open("https://wa.me/"+intl(s.p)+"?text="+encodeURIComponent(m),"_blank")}
+function openApps(){apL.innerHTML=A.length?A.map(function(a){return'<div class="ap"><b>'+esc(a.s)+'</b><br>'+esc(a.sv)+' — '+esc(a.d)+' '+esc(a.t)+'<br>'+esc(a.n)+'</div>'}).join(""):'<p class="m">ابھی کوئی اپوائنٹمنٹ نہیں۔</p>';dApps.showModal()}
+function openAdd(){dAdd.showModal()}
+function addSalon(){var n=aN.value.trim(),c=aC.value.trim(),a=aA.value.trim(),p=aP.value.trim();if(!n||!c||!p){alert("نام، شہر اور نمبر ضروری ہیں");return}
+var f=aI.files[0];function fin(img){S.unshift({n:n,c:c,a:a||c,p:p,img:img,e:"💇"});sv("salons",S);cities();render();dAdd.close()}
+if(f){if(f.size>1500000){alert("تصویر چھوٹی (1.5MB سے کم) چنیں");return}var r=new FileReader();r.onload=function(){fin(r.result)};r.readAsDataURL(f)}else fin("")}
+q.oninput=render;city.onchange=render;cities();render();
+</script>
+</body>
+</html>
